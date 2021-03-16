@@ -78,12 +78,17 @@ func listString(list *list.List) string {
 func (ds *DisjointSet) Union(x, y int) error {
 	xSet := ds.FindSet(x)
 	if xSet == nil {
-		return fmt.Errorf("No set for value: %d", x)
+		return fmt.Errorf("DisjointSet.Union: No x set for value: %d", x)
 	}
 
 	ySet := ds.FindSet(y)
 	if ySet == nil {
-		return fmt.Errorf("No set for value: %d", y)
+		return fmt.Errorf("DisjointSet.Union: No y set for value: %d", y)
+	}
+
+	if xSet == ySet {
+		// Nothing to do
+		return nil
 	}
 
 	ySet.PushBackList(xSet)
@@ -673,7 +678,8 @@ func (grid Grid) UndecidedCCL() {
 					if labels[i] != minLabel {
 						err := ds.Union(minLabel, labels[i])
 						if err != nil {
-							log.Fatal(err)
+							log.Println(err)
+							return
 						}
 					}
 				}
